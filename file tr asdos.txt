@@ -12,6 +12,7 @@ float xdiff = 0.0f;
 float ydiff = 0.0f;
 
 bool mouseDown = false;
+float xawal;
 using namespace std;
 void Inisialisasi(void)
 {
@@ -20,10 +21,64 @@ void Inisialisasi(void)
 	//glEnable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHT0);
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST); 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	is_depth = 1;
 }
-void buatsilinder(GLfloat x, GLfloat y, GLfloat radius, GLfloat tinggi) {
+void buatkotak(GLfloat x, GLfloat z, GLfloat y, GLfloat lebar, GLfloat tinggi) {
+	lebar = lebar / 2;
+	float xlebarplus = x + lebar;
+	float xlebarmin = x - lebar;
+	float ytingi = y + tinggi;
+	float zlebarplus = z + lebar;
+	float zlebarmin = z - lebar;
+
+
+	glBegin(GL_POLYGON);
+	glColor3d(0.4078, 0.3137, 0.2706);
+	glVertex3d(xlebarplus, ytingi, zlebarmin);
+	glVertex3d(xlebarmin, ytingi, zlebarmin);
+	glVertex3d(xlebarmin, ytingi, zlebarplus);
+	glVertex3d(xlebarplus, ytingi, zlebarplus);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(0.4078, 0.3137, 0.2706);
+	glVertex3d(xlebarplus, y, zlebarmin);
+	glVertex3d(xlebarmin, y, zlebarmin);
+	glVertex3d(xlebarmin, y, zlebarplus);
+	glVertex3d(xlebarplus, y, zlebarplus);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(0.4078, 0.3137, 0.2706);
+	glVertex3f(xlebarplus, ytingi, zlebarmin);
+	glVertex3f(xlebarmin, ytingi, zlebarmin);
+	glVertex3f(xlebarmin, y, zlebarmin);
+	glVertex3f(xlebarplus, y, zlebarmin);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(0.4078, 0.3137, 0.2706);
+	glVertex3f(xlebarplus, ytingi, zlebarplus);
+	glVertex3f(xlebarmin, ytingi, zlebarplus);
+	glVertex3f(xlebarmin, y, zlebarplus);
+	glVertex3f(xlebarplus, y, zlebarplus);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(0.4078, 0.3137, 0.2706);
+	glVertex3f(xlebarplus, ytingi, zlebarplus);
+	glVertex3f(xlebarplus, y, zlebarplus);
+	glVertex3f(xlebarplus, y, zlebarmin);
+	glVertex3f(xlebarplus, ytingi, zlebarmin);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(0.4078, 0.3137, 0.2706);
+	glVertex3f(xlebarmin, ytingi, zlebarplus);
+	glVertex3f(xlebarmin, y, zlebarplus);
+	glVertex3f(xlebarmin, y, zlebarmin);
+	glVertex3f(xlebarmin, ytingi, zlebarmin);
+	glEnd();
+}
+void buatsilinder(GLfloat x, GLfloat y, GLfloat z, GLfloat radius, GLfloat tinggi) {
 	int i;
 	int lineAmount = 360; //# of triangles used to draw circle
 
@@ -34,22 +89,51 @@ void buatsilinder(GLfloat x, GLfloat y, GLfloat radius, GLfloat tinggi) {
 	int cek = 0;
 	for (i = 0; i <= lineAmount; i++) {
 		glBegin(GL_POLYGON);
-		glColor3f(1, 0, 0);
+		glColor3f(0.4588, 0.349, 0.3059);
 		float hitungx = x + (radius * cos(i * twicePi / lineAmount));
 		float hitungy = y + (radius * sin(i * twicePi / lineAmount));
+		float hitungz = z + tinggi;
 		if (cek != 1) {
 			cek = 1;
 		}
 		else {
-			glVertex3f(sebelumx,sebelumy,-tinggi); 
-			glVertex3f(sebelumx, sebelumy, tinggi);
+			glVertex3f(sebelumx, z, sebelumy);
+			glVertex3f(sebelumx, z + tinggi, sebelumy);
 		}
-		glVertex3f(hitungx, hitungy, tinggi);
-		glVertex3f(hitungx, hitungy, -tinggi);
+		glVertex3f(hitungx, z + tinggi, hitungy);
+		glVertex3f(hitungx, z, hitungy);
 		sebelumx = hitungx;
 		sebelumy = hitungy;
 		glEnd();
 	}
+	glBegin(GL_POLYGON);
+	glColor3f(0.4588, 0.349, 0.3059);
+	for (int i = 0; i < 360; i++)
+	{
+		teta = i * 3.142 / 180;
+		glVertex3f(x + (radius * cos(i * twicePi / lineAmount)), z, y + (radius * sin(i * twicePi / lineAmount)));
+	}
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3f(0.4588, 0.349, 0.3059);
+	for (int i = 0; i < 360; i++)
+	{
+		teta = i * 3.142 / 180;
+		glVertex3f(x + (radius * cos(i * twicePi / lineAmount)), z + tinggi, y + (radius * sin(i * twicePi / lineAmount)));
+	}
+	glEnd();
+}
+void lingkaran(GLfloat x, GLfloat y, GLfloat z, GLfloat radius) {
+	glBegin(GL_POLYGON);
+	glColor3f(1, 0, 0);
+	int lineAmount = 360;
+	GLfloat twicePi = 2.0f * PI;
+	for (int i = 0; i < 360; i++)
+	{
+		teta = i * 3.142 / 180;
+		glVertex3f(x + (radius * cos(i * twicePi / lineAmount)), z, y + (radius * sin(i * twicePi / lineAmount)));
+	}
+	glEnd();
 }
 void summonkotak() {
 	float itung = glutGet(GLenum GLUT_WINDOW_HEIGHT) / 2;
@@ -97,25 +181,24 @@ void summonkotak() {
 	glEnd();
 	glFlush();
 }
-
-void tangga(int x, int y, int z, int lebar, int tingi,int panjang, int banyak) {
+void tangga(GLfloat x, GLfloat y, GLfloat z, GLfloat lebar, GLfloat tingi, GLfloat panjang, GLfloat banyak) {
 	int lokasix = x;
 	int lokasiy = y;
 	int lokasiz = z;
-	for (int i = 0; i < banyak;i++) {
+	for (int i = 0; i < banyak; i++) {
 		glBegin(GL_POLYGON);
 		glColor3d(1, 0, 0);
-		glVertex3f(lokasix + lebar, lokasiy + tingi, lokasiz+panjang);
-		glVertex3f(lokasix + lebar * 2, lokasiy+tingi, lokasiz +panjang );
-		glVertex3f(lokasix + lebar * 2,lokasiy+ tingi * 2, lokasiz +panjang);
-		glVertex3f(lokasix + lebar, lokasiy + tingi * 2, lokasiz +panjang);
+		glVertex3f(lokasix + lebar, lokasiy + tingi, lokasiz + panjang);
+		glVertex3f(lokasix + lebar * 2, lokasiy + tingi, lokasiz + panjang);
+		glVertex3f(lokasix + lebar * 2, lokasiy + tingi * 2, lokasiz + panjang);
+		glVertex3f(lokasix + lebar, lokasiy + tingi * 2, lokasiz + panjang);
 		glEnd();
 		glBegin(GL_POLYGON);
 		glColor3d(0, 1, 0);
-		glVertex3f(lokasix + lebar, lokasiy + tingi * 2, lokasiz+panjang * 2);
+		glVertex3f(lokasix + lebar, lokasiy + tingi * 2, lokasiz + panjang * 2);
 		glVertex3f(lokasix + lebar * 2, lokasiy + tingi * 2, lokasiz + panjang * 2);
-		glVertex3f(lokasix + lebar * 2, lokasiy + tingi * 2, lokasiz +panjang);
-		glVertex3f(lokasix + lebar, lokasiy + tingi * 2, lokasiz +panjang);
+		glVertex3f(lokasix + lebar * 2, lokasiy + tingi * 2, lokasiz + panjang);
+		glVertex3f(lokasix + lebar, lokasiy + tingi * 2, lokasiz + panjang);
 		glEnd();
 		lokasiz += panjang;
 		lokasiy += tingi;
@@ -123,28 +206,301 @@ void tangga(int x, int y, int z, int lebar, int tingi,int panjang, int banyak) {
 	}
 }
 
-void display()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	gluLookAt(0.5, 2.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	glRotatef(xrot, 1.0f, 0.0f, 0.0f);
-	glRotatef(yrot, 0.0f, 1.0f, 0.0f);
+
+
+
+
+
+void summontiang() {
+	//tiang 1
+	buatsilinder(-375, -500, -400, 15, 400);
+	buatsilinder(375, -500, -400, 15, 400);
+	buatsilinder(-375, -500, -7.5, 15.5, 7.5);
+	buatsilinder(375, -500, -7.5, 15.5, 7.5);
+	buatsilinder(-375, -500, 0, 16.5, 7.5);
+	buatsilinder(375, -500, 0, 16.5, 7.5);
+	buatkotak(-375, -500, 0, 22.5, 420);
+	buatkotak(375, -500, 0, 22.5, 420);
+
+	//tiang tengah 1
+	buatsilinder(-125, -500, -400, 15, 400);
+	buatsilinder(125, -500, -400, 15, 400);
+	buatsilinder(-125, -500, -7.5, 15.5, 7.5);
+	buatsilinder(125, -500, -7.5, 15.5, 7.5);
+	buatsilinder(-125, -500, 0, 16.5, 7.5);
+	buatsilinder(125, -500, 0, 16.5, 7.5);
+	buatkotak(-125, -500, 0, 22.5, 420);
+	buatkotak(125, -500, 0, 22.5, 420);
+
+	//tiang 2
+	buatkotak(-375, -250, -400, 22.5, 400);
+	buatkotak(375, -250, -400, 22.5, 400);
+	buatkotak(-375, -250, 0, 22.5, 420);
+	buatkotak(375, -250, 0, 22.5, 420);
+
+	//tiang tengah 2
+	buatkotak(-125, -250, -400, 22.5, 400);
+	buatkotak(125, -250, -400, 22.5, 400);
+	buatkotak(-125, -250, 0, 22.5, 420);
+	buatkotak(125, -250, 0, 22.5, 420);
+
+
+	//tiang 3
+	buatkotak(-375, 0, -400, 22.5, 400);
+	buatkotak(375, 0, -400, 22.5, 400);
+	buatkotak(-375, 0, 0, 22.5, 420.1);
+	buatkotak(375, 0, 0, 22.5, 420.1);
+
+	//tiang tengah 3
+	buatkotak(-125,0, -400, 22.5, 400);
+	buatkotak(125, 0, -400, 22.5, 400);
+	buatkotak(-125, 0, 0, 22.5, 420.1);
+	buatkotak(125, 0, 0, 22.5, 420.1);
+
+	for (int i = 1; i < 4; i++) {
+		//tiang 4 - 6
+		buatkotak(-375, i * 250, -400, 22.5, 400);
+		buatkotak(375, i * 250, -400, 22.5, 400);
+		buatkotak(-375, i * 250, 0, 22.5, 420.1);
+		buatkotak(375, i * 250, 0, 22.5, 420.1);
+
+		//tiang tengah 4 - 6
+		buatkotak(-125, i * 250, -400, 22.5, 400);
+		buatkotak(125, i * 250, -400, 22.5, 400);
+	}
+
+	//tiang 7
+	buatkotak(-375, 1000, -400, 22.5, 400);
+	buatkotak(375, 1000, -400, 22.5, 400);
+	buatkotak(-375, 1000, 0, 22.5, 420.1);
+	buatkotak(375, 1000, 0, 22.5, 420.1);
+
+	//tiang tengah 7
+	buatkotak(-125, 1000, -400, 22.5, 400);
+	buatkotak(125, 1000, -400, 22.5, 400);
+	buatkotak(-125, 1000, 0, 22.5, 420.1);
+	buatkotak(125, 1000, 0, 22.5, 420.1);
+}
+void buatpersegipanjang00(GLfloat x, GLfloat y, GLfloat z, GLfloat lebarplus, GLfloat lebarmin, GLfloat panjangplus, GLfloat panjangmin, GLfloat tinggi, GLfloat r, GLfloat g, GLfloat b) {
+	float xlebarplus = x + lebarplus;
+	float xlebarmin = x - lebarmin;
+	float ytingi = y + tinggi;
+	float zpanjangplus = z + panjangplus;
+	float zpanjangmin = z - panjangmin;
+
+
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3d(xlebarplus, ytingi, zpanjangmin);
+	glVertex3d(xlebarmin, ytingi, zpanjangmin);
+	glVertex3d(xlebarmin, ytingi, zpanjangplus);
+	glVertex3d(xlebarplus, ytingi, zpanjangplus);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3d(xlebarplus, y, zpanjangmin);
+	glVertex3d(xlebarmin, y, zpanjangmin);
+	glVertex3d(xlebarmin, y, zpanjangplus);
+	glVertex3d(xlebarplus, y, zpanjangplus);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebarplus, ytingi, zpanjangmin);
+	glVertex3f(xlebarmin, ytingi, zpanjangmin);
+	glVertex3f(xlebarmin, y, zpanjangmin);
+	glVertex3f(xlebarplus, y, zpanjangmin);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebarplus, ytingi, zpanjangplus);
+	glVertex3f(xlebarmin, ytingi, zpanjangplus);
+	glVertex3f(xlebarmin, y, zpanjangplus);
+	glVertex3f(xlebarplus, y, zpanjangplus);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebarplus, ytingi, zpanjangplus);
+	glVertex3f(xlebarplus, y, zpanjangplus);
+	glVertex3f(xlebarplus, y, zpanjangmin);
+	glVertex3f(xlebarplus, ytingi, zpanjangmin);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebarmin, ytingi, zpanjangplus);
+	glVertex3f(xlebarmin, y, zpanjangplus);
+	glVertex3f(xlebarmin, y, zpanjangmin);
+	glVertex3f(xlebarmin, ytingi, zpanjangmin);
+	glEnd();
+}
+void buatpersegipanjang(GLfloat x, GLfloat xlebar, GLfloat y, GLfloat ytingi, GLfloat z, GLfloat zpanjang, GLfloat r, GLfloat g, GLfloat b) {
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3d(xlebar, ytingi, z);
+	glVertex3d(x, ytingi, z);
+	glVertex3d(x, ytingi, zpanjang);
+	glVertex3d(xlebar, ytingi, zpanjang);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3d(xlebar, y, z);
+	glVertex3d(x, y, z);
+	glVertex3d(x, y, zpanjang);
+	glVertex3d(xlebar, y, zpanjang);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebar, ytingi, z);
+	glVertex3f(x, ytingi, z);
+	glVertex3f(x, y, z);
+	glVertex3f(xlebar, y, z);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebar, ytingi, zpanjang);
+	glVertex3f(x, ytingi, zpanjang);
+	glVertex3f(x, y, zpanjang);
+	glVertex3f(xlebar, y, zpanjang);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(xlebar, ytingi, zpanjang);
+	glVertex3f(xlebar, y, zpanjang);
+	glVertex3f(xlebar, y, z);
+	glVertex3f(xlebar, ytingi, z);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor3d(r, g, b);
+	glVertex3f(x, ytingi, zpanjang);
+	glVertex3f(x, y, zpanjang);
+	glVertex3f(x, y, z);
+	glVertex3f(x, ytingi, z);
+	glEnd();
+}
+void buatjendela(GLfloat x, GLfloat xlebar, GLfloat y, GLfloat ytingi, GLfloat z, GLfloat zpanjang) {
+	glBegin(GL_POLYGON);
+	glColor4f(0, 0, 0, 0.5);
+	glVertex3d(xlebar, ytingi, z);
+	glVertex3d(x, ytingi, z);
+	glVertex3d(x, ytingi, zpanjang);
+	glVertex3d(xlebar, ytingi, zpanjang);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor4f(0, 0, 0, 0.5);
+	glVertex3d(xlebar, y, z);
+	glVertex3d(x, y, z);
+	glVertex3d(x, y, zpanjang);
+	glVertex3d(xlebar, y, zpanjang);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor4f(0, 0, 0, 0.5);
+	glVertex3f(xlebar, ytingi, z);
+	glVertex3f(x, ytingi, z);
+	glVertex3f(x, y, z);
+	glVertex3f(xlebar, y, z);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor4f(0, 0, 0, 0.5);
+	glVertex3f(xlebar, ytingi, zpanjang);
+	glVertex3f(x, ytingi, zpanjang);
+	glVertex3f(x, y, zpanjang);
+	glVertex3f(xlebar, y, zpanjang);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor4f(0, 0, 0, 0.5);
+	glVertex3f(xlebar, ytingi, zpanjang);
+	glVertex3f(xlebar, y, zpanjang);
+	glVertex3f(xlebar, y, z);
+	glVertex3f(xlebar, ytingi, z);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glColor4f(0, 0, 0, 0.5);
+	glVertex3f(x, ytingi, zpanjang);
+	glVertex3f(x, y, zpanjang);
+	glVertex3f(x, y, z);
+	glVertex3f(x, ytingi, z);
+	glEnd();
+}
+void display() {
 	glPushMatrix();
-	glScalef(1, 1, 1);
-	//glutSolidCube(20.0);
-	//glutWireCube(20);
-	//glutWireSphere(20, 30,30);
-	//glutSolidCone(10,30,30,10);
-	//glutWireCone(10,30,30,10);
-	//summonkotak();
-	//buatsilinder(0,0,5,50);
-	tangga(0, 0, 0, 10, 5, 5, 3);
-	tangga(20, 0, 0, 10, 5, 5, 3);
+	glScalef(0.2, 0.2, 0.2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	gluLookAt(0, 450, -1000, 0, 0, 0, 0, 1, 0);
+	glRotatef(xrot, 1, 0, 0);
+	glRotatef(yrot, 0, 1, 0);
+	//tiang
+	summontiang();
+
+	//tanah 
+	buatpersegipanjang(600, -600, -450, -400, 1100, -700, 0, 1, 0);
+
+	//bawah rumah
+	buatpersegipanjang(375, -375, 0, 20, 1002.5, -300, 0.40, 0.3137, 0.2627);
+	buatpersegipanjang(125, -125, 0, 20, -300, -495, 0.40, 0.3137, 0.2627);
+
+	//bawahnya bawah rumah
+	buatpersegipanjang(375, -375, -20, 0, 1002.5, -300, 0.4549, 0.3451, 0.3294);
+	buatpersegipanjang(125, -125, -20, 0, -300, -495, 0.4549, 0.3451, 0.3294);
+
+	//dinding depan jendela kanan
+	buatpersegipanjang(-377.5, -127.5, 20, 100, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(-377.5, -127.5, 270, 420, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(-377.5, -297.5, 100, 270, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(-207.5, -127.5, 100, 270, -2.5, 2.5, 1, 1, 1);
+
+	//dinding depan pintu
+	buatpersegipanjang(-127.5, 122.5, 20, 25, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(-127.5, 125, 270, 420, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(-127.5, -62.5, 25, 270, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(57.5, 127.5, 25, 270, -2.5, 2.5, 1, 1, 1);
+
+	//dinding depan jendela kiri
+	buatpersegipanjang(127.5, 377.5, 20, 100, -2.5, 2.5, 1, 1, 1);
+
+	buatpersegipanjang(127.5, 207.5, 100, 275, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(297.5, 377.5, 100, 275, -2.5, 2.5, 1, 1, 1);
+
+	buatpersegipanjang(127.5, 377.5, 275, 280, -2.5, 2.5, 1, 1, 1);
+
+	buatpersegipanjang(127.5, 207.5, 280, 320, -2.5, 2.5, 1, 1, 1);
+	buatpersegipanjang(297.5, 377.5, 280, 320, -2.5, 2.5, 1, 1, 1);
+
+	buatpersegipanjang(127.5, 377.5, 320, 420, -2.5, 2.5, 1, 1, 1);
+
+
+	//dinding kanan
+	buatpersegipanjang(-372.5, -377.5, 20, 200, -2.5, 1002.5, 1, 1, 1);
+	buatpersegipanjang(-372.5, -377.5, 320, 420, -2.5, 1002.5, 1, 1, 1);
+	xawal = -2.5;
+	for (int i = 0; i < 4;i++) {
+		buatpersegipanjang(-372.5, -377.5, 200, 320, xawal, xawal+65, 1, 1, 1);
+		buatpersegipanjang(-372.5, -377.5, 200, 320, xawal+185, xawal+250, 1, 1, 1);
+		xawal += 250;
+	}
+
+	//dinding kiri
+	buatpersegipanjang(372.5, 377.5, 20, 200, -2.5, 1002.5, 1, 1, 1);
+	buatpersegipanjang(372.5, 377.5, 320, 420, -2.5, 1002.5, 1, 1, 1);
+	xawal = -2.5;
+	for (int i = 0; i < 4; i++) {
+		buatpersegipanjang(372.5, 377.5, 200, 320, xawal, xawal + 65, 1, 1, 1);
+		buatpersegipanjang(372.5, 377.5, 200, 320, xawal + 185, xawal + 250, 1, 1, 1);
+		xawal += 250;
+	}
+
+	//dinding belakang
+	buatpersegipanjang(-377.5, 377.5, 20, 200, 997.5, 1002.5, 1, 1, 1);
+	buatpersegipanjang(-377.5, 377.5, 320, 420, 997.5, 1002.5, 1, 1, 1);
+	xawal = -377.5;
+	for (int i = 0; i < 3; i++) {
+		buatpersegipanjang(xawal, xawal+65 , 200, 320, 997.5, 1002.5, 1, 1, 1);
+		buatpersegipanjang(xawal+185, xawal+250, 200, 320, 997.5, 1002.5, 1, 1, 1);
+		xawal += 250;
+	}
+	buatjendela(207.5, 297.5, 100, 275, -2.5, 2.5);
+
 	glPopMatrix();
 	glFlush();
 }
-
 void idle()
 {
 	if (!mouseDown)
@@ -154,55 +510,114 @@ void idle()
 	}
 	glutPostRedisplay();
 }
-
-void mouse(int button, int state, int x, int y)
-{
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-	{
-		mouseDown = true;
+bool mousedown = false;
+void mouse(int button, int state, int x, int y) {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		mousedown = true;
 		xdiff = x - yrot;
 		ydiff = -y + xrot;
 	}
-	else
-		mouseDown = false;
-}
+	else {
+		mousedown = false;
+	}
 
-void mouseMotion(int x, int y)
-{
-	if (mouseDown)
-	{
+}
+void mousemotion(int x, int y) {
+	if (mousedown) {
 		yrot = x - xdiff;
 		xrot = y + ydiff;
-
 		glutPostRedisplay();
 	}
 }
-
+void keyboard(unsigned char key, int x, int y) {
+	switch (key) {
+	case 'a':
+	case 'A':
+		glTranslatef(-1.0, 0.0, 0.0);
+		break;
+	case 'd':
+	case 'D':
+		glTranslatef(1.0, 0.0, 0.0);
+		break;
+		//gerak ke depan
+	case 'w':
+	case 'W':
+		glTranslatef(0.0, 1.0, 0);
+		break;
+		//gerak ke belakang
+	case 's':
+	case 'S':
+		glTranslatef(0.0, -1.0, 0);
+		break;
+		//gerak ke atas
+	case 'q':
+	case 'Q':
+		glTranslatef(0.0, 0, 1.0);
+		break;
+		//gerak ke bawah
+	case 'e':
+	case 'E':
+		glTranslatef(0.0, .0, -1.0);
+		break;
+		//rotate ke kiri
+	case 'j':
+	case 'J':
+		glRotatef(1.0, 0.0, -5.0, 0.0);
+		break;
+		//rotate ke kanan
+	case 'l':
+	case 'L':
+		glRotatef(1.0, 0.0, 5.0, 0.0);
+		break;
+		//rotate ke samping kanan
+	case 'o':
+	case 'O':
+		glRotatef(1.0, 0.0, 0.0, -5.0);
+		break;
+		//rotate ke samping kiri
+	case 'u':
+	case 'U':
+		glRotatef(1.0, 0.0, 0.0, 5.0);
+		break;
+		//rotate ke atas
+	case 'i':
+	case 'I':
+		glRotatef(1.0, -5.0, 0.0, 0.0);
+		break;
+		//rotate ke bawah
+	case 'k':
+	case 'K':
+		glRotatef(1.0, 5.0, 0.0, 0.0);
+		break;
+	}
+	display();
+	//glutPostRedisplay(); 
+}
 void ukuran(int lebar, int tinggi)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glViewport(0, 0, lebar, tinggi);
-	gluPerspective(50.0, lebar / tinggi, 5.0, 500.0);
+	gluPerspective(50.0, lebar / tinggi, 5.0, 1500);
 	glTranslatef(0.0, -5.0, -150.0);
 	glMatrixMode(GL_MODELVIEW);
 }
-
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowSize(900, 700);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_SINGLE);
+	glutInitWindowSize(1050, 700);
 	glutInitWindowPosition(210, 30);
 	glutCreateWindow("672016157");
-	glutDisplayFunc(display);
+	glutDisplayFunc(display);	
 	glutReshapeFunc(ukuran);
 
 	glutMouseFunc(mouse);
-	glutMotionFunc(mouseMotion);
+	glutMotionFunc(mousemotion);
+	glutKeyboardFunc(keyboard);
 
 
-	//glutIdleFunc(display);
+	//glutIdleFunc(display2);
 	Inisialisasi();
 	glutMainLoop();
 	return 0;
