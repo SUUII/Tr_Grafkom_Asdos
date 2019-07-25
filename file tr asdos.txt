@@ -353,13 +353,13 @@ void buatzigzagoon(GLfloat x, GLfloat xlebar, GLfloat zatas, GLfloat zatasatas, 
 
 void atep() {
 	//atep dinding belakang
-	buatpersegipanjang(-125, 125, 420, 545, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
+	buatpersegipanjang(-125, 125, 420, 545, 997.5, 1011.25, 0.40, 0.3137, 0.2627);
 
 	//atep dinding belakang kiri
-	buatsegitiga(-377.5, -125, 420, 545, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
+	buatsegitiga(-386.25, -125, 420, 545, 997.5, 1011.25, 0.40, 0.3137, 0.2627);
 
 	//atep dinding belakang kanan
-	buatsegitiga(377.5, 125, 420, 545, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
+	buatsegitiga(386.25, 125, 420, 545, 997.5, 1011.25, 0.40, 0.3137, 0.2627);
 
 	//atep atas depan
 	buatpersegipanjang(-125, 125, 420, 545, -2.5, 2.5, 0.40, 0.3137, 0.2627);
@@ -371,19 +371,26 @@ void atep() {
 	buatsegitiga(377.5, 125, 420, 545, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
 	//atep rumah tengah
-	buatpersegipanjang(125, -125, 545, 550, -2.5, 1002.5, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(125, -125, 545, 550, -661.25, 1011.25, 0.2275, 0.1804, 0.1451);
 
 	//atep miring rumah atas kanan
-	buatzigzagoon(125, 377.5, 545, 550, 425, 420, -2.5, 1002.5, 0.2275, 0.1804, 0.1451);
+	buatzigzagoon(125, 386.25, 545, 550, 425, 420, -661.25, 1011.25, 0.2275, 0.1804, 0.1451);
 
 	//atep miring rumah atas kiri
-	buatzigzagoon(-125, -377.5, 545, 550, 425, 420, -2.5, 1002.5, 0.2275, 0.1804, 0.1451);
+	buatzigzagoon(-125, -386.25, 545, 550, 425, 420, -661.25, 1011.25, 0.2275, 0.1804, 0.1451);
 
 	//atep depan teras
-	buatpersegipanjang(375, -375, 415, 420, -2.5, -250, 0.2275, 0.1804, 0.1451);
-	buatpersegipanjang(125, -125, 415, 420, -250, -645, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(386.25, -386.25, 419.9, 420, -2.5, -250, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(386.25, -386.25, 419.9, 420, -250, -645, 0.2275, 0.1804, 0.1451);
 
+	//atep atas depan teras
+	buatpersegipanjang(-125, 125, 420, 545, -661.25, -657.5, 0.40, 0.3137, 0.2627);
 
+	//atep atas depan kiri teras
+	buatsegitiga(-386.25, -125, 420, 545, -647.5, -661.25, 0.40, 0.3137, 0.2627);
+
+	//atep dinding depan kanan teras
+	buatsegitiga(386.25, 125, 420, 545, -647.5, -661.25, 0.40, 0.3137, 0.2627);
 }
 void bawahan() {
 	//tanah 
