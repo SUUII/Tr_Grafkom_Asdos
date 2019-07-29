@@ -3,6 +3,8 @@
 #include <glut.h>
 #include <gl/GL.h>
 #include <iostream>
+#include "imageloader.h"
+
 const float PI = 3.14159;
 float teta;
 int is_depth;
@@ -14,19 +16,46 @@ bool mouseDown = false;
 float xawal;
 using namespace std;
 
+GLuint _textureId;
+GLuint _textureIdlogo;
+GLuint _textureIdjendelabolongbolong;
+
+
+GLuint loadTexture(Image* image) {
+	GLuint textureId;
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+	return textureId;
+}
+
+void initRendering() {
+	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	Image* image = loadBMP("aaaaaaaa.bmp");
+	_textureId = loadTexture(image);
+	image = loadBMP("logo.bmp");
+	_textureIdlogo = loadTexture(image);
+	image = loadBMP("jendelabolong.bmp");
+	_textureIdjendelabolongbolong = loadTexture(image);
+	delete image;
+}
+
 //insialisasi biar bisa dipangil dimanapun
 void atep();
+void atasnyaatep();
 void bawahan();
-
 void dindingdepanrumah();
 void buatdinding();
 void buattangga();
 void summontiang();
 void buatpersegipanjang(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat zpanjang, GLfloat y, GLfloat ytingi, GLfloat r, GLfloat g, GLfloat b);
-
 void buatsegitiga(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat zpanjang, GLfloat y, GLfloat ytingi, GLfloat r, GLfloat g, GLfloat b);
-void buatjendela(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat ztingi, GLfloat y, GLfloat ypanjang, GLfloat a);
-
+void buatjendela(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat ztingi, GLfloat y, GLfloat ypanjang);
 void buatkotak(GLfloat x, GLfloat y, GLfloat z, GLfloat lebar, GLfloat tinggi);
 
 
@@ -46,35 +75,35 @@ void Inisialisasi(void)
 	GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light1_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light1_specular);
-	GLfloat light1_position[] = { 1000, 1500, 1000, 1.0 };
+	GLfloat light1_position[] = { 0, 1500, 3000, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, light1_position);
 
-	glEnable(GL_LIGHT1);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
-	light1_position[0] =  -1000;
-	light1_position[1] = 1500;
-	light1_position[2] = 1000;
-	light1_position[3] = 1.0;
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	//glEnable(GL_LIGHT1);
+	//glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+	//glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
+	//light1_position[0] = -1000;
+	//light1_position[1] = 1500;
+	//light1_position[2] = 3000;
+	//light1_position[3] = 1.0;
+	//glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
 
-	glEnable(GL_LIGHT2);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, light1_diffuse);
-	glLightfv(GL_LIGHT2, GL_SPECULAR, light1_specular);
-	light1_position[0] = 1000;
-	light1_position[1] = -1500;
-	light1_position[2] = 1000;
-	light1_position[3] = 1.0;
-	glLightfv(GL_LIGHT2, GL_POSITION, light1_position);
+	//glEnable(GL_LIGHT2);
+	//glLightfv(GL_LIGHT2, GL_DIFFUSE, light1_diffuse);
+	//glLightfv(GL_LIGHT2, GL_SPECULAR, light1_specular);
+	//light1_position[0] = 1000;
+	//light1_position[1] = -1500;
+	//light1_position[2] = 3000;
+	//light1_position[3] = 1.0;
+	//glLightfv(GL_LIGHT2, GL_POSITION, light1_position);
 
-	glEnable(GL_LIGHT3);
-	glLightfv(GL_LIGHT3, GL_DIFFUSE, light1_diffuse);
-	glLightfv(GL_LIGHT3, GL_SPECULAR, light1_specular);
-	light1_position[0] = -1000;
-	light1_position[1] = -1500;
-	light1_position[2] = 1000;
-	light1_position[3] = 1.0;
-	glLightfv(GL_LIGHT3, GL_POSITION, light1_position);
+	//glEnable(GL_LIGHT3);
+	//glLightfv(GL_LIGHT3, GL_DIFFUSE, light1_diffuse);
+	//glLightfv(GL_LIGHT3, GL_SPECULAR, light1_specular);
+	//light1_position[0] = -1000;
+	//light1_position[1] = -1500;
+	//light1_position[2] = 3000;
+	//light1_position[3] = 1.0;
+	//glLightfv(GL_LIGHT3, GL_POSITION, light1_position);
 
 
 }
@@ -122,7 +151,6 @@ void buatsilinder(GLfloat x, GLfloat y, GLfloat z, GLfloat radius, GLfloat tingg
 		glVertex3f(x + (radius * cos(i * twicePi / lineAmount)), y + (radius * sin(i * twicePi / lineAmount)), z + tinggi);
 	}
 	glEnd();
-
 }
 void buatkotak(GLfloat x, GLfloat y, GLfloat z, GLfloat lebar, GLfloat tinggi) {
 	lebar = lebar / 2;
@@ -220,49 +248,223 @@ void buatpersegipanjang(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat zpanjang, 
 	glVertex3f(x, ytingi, z);
 	glEnd();
 }
-void buatjendela(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat ztingi, GLfloat y, GLfloat ypanjang, GLfloat a) {
+void buatjendela(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat ztingi, GLfloat y, GLfloat ypanjang) {
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glBegin(GL_POLYGON);
-	glColor4f(0, 0, 0, a);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3d(xlebar, ypanjang, z);
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex3d(x, ypanjang, z);
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex3d(x, ypanjang, ztingi);
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex3d(xlebar, ypanjang, ztingi);
 	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glBegin(GL_POLYGON);
-	glColor4f(0, 0, 0, a);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3d(xlebar, y, z);
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex3d(x, y, z);
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex3d(x, y, ztingi);
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex3d(xlebar, y, ztingi);
 	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glBegin(GL_POLYGON);
-	glColor4f(0, 0, 0, a);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3f(xlebar, ypanjang, z);
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(x, ypanjang, z);
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(x, y, z);
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(xlebar, y, z);
 	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glBegin(GL_POLYGON);
-	glColor4f(0, 0, 0, a);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3f(xlebar, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(x, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(x, y, ztingi);
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(xlebar, y, ztingi);
 	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glBegin(GL_POLYGON);
-	glColor4f(0, 0, 0, a);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3f(xlebar, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(xlebar, y, ztingi);
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(xlebar, y, z);
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(xlebar, ypanjang, z);
 	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glBegin(GL_POLYGON);
-	glColor4f(0, 0, 0, a);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3f(x, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(x, y, ztingi);
+	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(x, y, z);
+	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(x, ypanjang, z);
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+void buatjendelabolongbolong(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat ztingi, GLfloat y, GLfloat ypanjang) {
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdjendelabolongbolong);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3d(xlebar, ypanjang, z);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3d(x, ypanjang, z);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3d(x, ypanjang, ztingi);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3d(xlebar, ypanjang, ztingi);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdjendelabolongbolong);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3d(xlebar, y, z);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3d(x, y, z);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3d(x, y, ztingi);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3d(xlebar, y, ztingi);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdjendelabolongbolong);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3f(xlebar, ypanjang, z);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(x, ypanjang, z);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(x, y, z);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(xlebar, y, z);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdjendelabolongbolong);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3f(xlebar, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(x, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(x, y, ztingi);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(xlebar, y, ztingi);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdjendelabolongbolong);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3f(xlebar, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(xlebar, y, ztingi);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(xlebar, y, z);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(xlebar, ypanjang, z);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdjendelabolongbolong);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3f(x, ypanjang, ztingi);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(x, y, ztingi);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(x, y, z);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(x, ypanjang, z);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
 }
 void buatsegitiga(GLfloat x, GLfloat xlebar, GLfloat z, GLfloat zpanjang, GLfloat y, GLfloat ytingi, GLfloat r, GLfloat g, GLfloat b) {
 	//segitiga
@@ -479,7 +681,7 @@ void atep() {
 
 	//atep miring rumah atas kanan
 	buatzigzagoon(125, 561.25, 545, 550, 337, 342, -661.25, 1011.25, 0.2275, 0.1804, 0.1451);
-		
+
 	//atep miring rumah atas kiri
 	buatzigzagoon(-125, -561.25, 545, 550, 337, 342, -661.25, 1011.25, 0.2275, 0.1804, 0.1451);
 
@@ -533,6 +735,7 @@ void atasnyaatep() {
 	//atep miring rumah atas kiri
 	buatzigzagoon(0, -200, 800, 810, 515, 525, -681.25, 1031.25, 0.45, 0.3137, 0.2627);
 
+	//atep kecil
 	//belakang
 	buatsegitiga(-130, 0, 680, 850, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
 	buatsegitiga(130, 0, 680, 850, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
@@ -549,8 +752,38 @@ void atasnyaatep() {
 	//atep miring rumah atas kiri
 	buatzigzagoon(0, -150, 850, 860, 650, 660, -681.25, 1031.25, 0.45, 0.3137, 0.2627);
 
+	//jendela depan
+	buatjendela(-55, 55, 555, 670, -661.26, -660.74);
+	buatpersegipanjang(-60, -55, 550, 675, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(60, 55, 550, 675, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 550, 555, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 670, 675, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-5, 5, 555, 670, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
 
-	
+	//jendela bolong bolong depan
+	buatjendelabolongbolong(-55, 55, 680, 710, -661.26, -660.74);
+	buatpersegipanjang(-60, -55, 675, 715, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(60, 55, 675, 715, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 675, 680, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 710, 715, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-5, 5, 680, 675, -661.3, -660.7, 0.5804, 0.4549, 0.3804);
+
+	//jendela belakang
+	buatjendela(-55, 55, 555, 670, 997.49, 1002.51);
+	buatpersegipanjang(-60, -55, 550, 675, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(60, 55, 550, 675, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 550, 555, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 670, 675, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-5, 5, 555, 670, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+
+	//jendela bolong bolong belakang
+	buatjendelabolongbolong(-55, 55, 680, 710, 997.49, 1002.51);
+	buatpersegipanjang(-60, -55, 675, 715, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(60, 55, 675, 715, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 675, 680, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-55, 55, 710, 715, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-5, 5, 680, 675, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+
 }
 void bawahan() {
 	//tanah 
@@ -563,6 +796,94 @@ void bawahan() {
 	//bawahnya bawah rumah
 	buatpersegipanjang(375, -375, -20, 0, 1002.5, -250, 0.4549, 0.3451, 0.3294);
 	buatpersegipanjang(125, -125, -20, 0, -250, -645, 0.4549, 0.3451, 0.3294);
+
+	//buatlogo
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureIdlogo);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0f, 0.0f);
+	glNormal3f(0.0, 1.0f, 0.0f);
+	glVertex3d(-125, -645.1, -140);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3d(125, -645.1, -140);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3d(125, -645.1, -40);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3d(-125, -645.1, -40);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+
+	//connector tiang 1 dan 2
+	buatpersegipanjang(370, 380, -30, 10, -638.75, -261.25, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(-370, -380, -30, 10, -638.75, -261.25, 0.2275, 0.1804, 0.1451);
+}
+void pagar() {
+	//pagar depan
+	buatpersegipanjang(125, -125, 150, 125, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(125, -125, 40, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-80, -95, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-50, -65, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-20, -35, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(10, -5, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(40, 25, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(70, 55, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(100, 85, 150, 20, -650, -645, 0.1, 0.1804, 0.1451);
+
+	//pagar tengah samping kanan
+	buatpersegipanjang(125, 125, 150, 125, -440, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(125, 125, 40, 20, -440, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(125, 125, 40, 125, -590, -615, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(125, 125, 40, 125, -545, -570, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(125, 125, 40, 125, -500, -525, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(125, 125, 40, 125, -455, -480, 0.1, 0.1804, 0.1451);
+
+	//pagar tengah samping kiri
+	buatpersegipanjang(-125, -125, 150, 125, -440, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-125, -125, 40, 20, -440, -645, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-125, -125, 40, 125, -590, -615, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-125, -125, 40, 125, -545, -570, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-125, -125, 40, 125, -500, -525, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-125, -125, 40, 125, -455, -480, 0.1, 0.1804, 0.1451);
+
+	//pagar kanan kiri belakang
+	buatpersegipanjang(-125, -375, 150, 125, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 125, 150, 125, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-125, -375, 40, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 125, 40, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-155, -175, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-185, -205, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-215, -235, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-245, -265, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-275, -295, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-305, -325, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-335, -355, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(175, 155, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(205, 185, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(235, 215, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(265, 245, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(295, 275, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(325, 305, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(355, 335, 150, 20, -250, -250, 0.1, 0.1804, 0.1451);
+
+	//pagar samping kanan belakang
+	buatpersegipanjang(375, 375, 150, 125, 0, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 375, 40, 20, 0, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 375, 40, 125, -190, -220, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 375, 40, 125, -140, -170, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 375, 40, 125, -90, -120, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(375, 375, 40, 125, -40, -70, 0.1, 0.1804, 0.1451);
+
+	//pagar samping kiri belakang
+	buatpersegipanjang(-375, -375, 150, 125, 0, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-375, -375, 40, 20, 0, -250, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-375, -375, 40, 125, -190, -220, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-375, -375, 40, 125, -140, -170, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-375, -375, 40, 125, -90, -120, 0.1, 0.1804, 0.1451);
+	buatpersegipanjang(-375, -375, 40, 125, -40, -70, 0.1, 0.1804, 0.1451);
 }
 void dindingdepanrumah() {
 
@@ -570,41 +891,72 @@ void dindingdepanrumah() {
 	buatpersegipanjang(-377.5, -127.5, 20, 100, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
 	buatpersegipanjang(-377.5, -297.5, 100, 275, -2.5, 2.5, 0.40, 0.3137, 0.2627);
-	buatjendela(-297.5, -207.5, 100, 275, -2.5, 2.5, 0.3);
+
+	buatjendela(-292.5, -202.5, 105, 270, -2.5, 2.5);
+	//gagang
+	buatpersegipanjang(-297.5, -292.5, 100, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-292.5, -207.5, 100, 105, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-202.5, -207.5, 100, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-292.5, -207.5, 270, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-245, -255, 100, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+
 	buatpersegipanjang(-207.5, -127.5, 100, 275, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
-	buatpersegipanjang(-377.5, -127.5, 275, 280, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+	buatpersegipanjang(-127.5, -207.5, 275, 315, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
-	buatpersegipanjang(-377.5, -297.5, 280, 320, -2.5, 2.5, 0.40, 0.3137, 0.2627);
-	buatjendela(-297.5, -207.5, 280, 320, -2.5, 2.5, 0.3);
-	buatpersegipanjang(-207.5, -127.5, 280, 320, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+	buatjendelabolongbolong(-207.5, -292.5, 275, 315, -2.5, 2.5);
+	//gagang
+	buatpersegipanjang(-297.5, -292.5, 275, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-292.5, -207.5, 275, 280, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-202.5, -207.5, 275, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-292.5, -207.5, 310, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
 
-	buatpersegipanjang(-377.5, -127.5, 320, 420, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+	buatpersegipanjang(-297.5, -377.5, 275, 315, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+
+	buatpersegipanjang(-127.5, -377.5, 315, 420, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+
 
 	//dinding depan pintu kanan kiri
 	buatpersegipanjang(-127.5, -87.5, 20, 280, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 	buatpersegipanjang(-87.5, -77.5, 20, 280, -5, 5, 0.5804, 0.4549, 0.3804);
 	buatpersegipanjang(-77.5, 77.5, 270, 280, -5, 5, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(87.5, 77.5, 20, 280, -5, 5, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(87.5, 127.5, 20, 280, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
 	//pintu kanan
-	buatpersegipanjang(-77.5, 0, 255, 270, -5, 5, 0, 1, 1);
-	buatpersegipanjang(-77.5, -62.5, 35, 270, -5, 5, 0, 1, 1);
-	buatjendela(-62.5, -15, 35, 255, -5, 5, 0.3);
-	buatpersegipanjang(-15, 0, 35, 270, -5, 5, 0, 1, 1);
-	buatpersegipanjang(-77.5, 0, 20, 35, -5, 5, 0, 1, 1);
+	buatpersegipanjang(-77.5, 0, 255, 270, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(-77.5, -62.5, 35, 270, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatjendela(-62.5, -15, 35, 135, -5, 5);
+	buatpersegipanjang(-77.5, 0, 135, 155, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatjendela(-62.5, -15, 155, 255, -5, 5);
+	buatpersegipanjang(-15, 0, 35, 270, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(-77.5, 0, 20, 35, -5, 5, 0.2275, 0.1804, 0.1451);
 
 
 	//pintu kiri
-	buatpersegipanjang(77.5, 0, 255, 270, -5, 5, 0, 1, 1);
-	buatpersegipanjang(77.5, 62.5, 35, 270, -5, 5, 0, 1, 1);
-	buatjendela(62.5, 15, 35, 255, -5, 5, 0.3);
-	buatpersegipanjang(15, 0, 35, 270, -5, 5, 0, 1, 1);
-	buatpersegipanjang(77.5, 0, 20, 35, -5, 5, 0, 1, 1);
+	buatpersegipanjang(77.5, 0, 255, 270, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(77.5, 62.5, 35, 270, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatjendela(62.5, 15, 35, 135, -5, 5);
+	buatpersegipanjang(77.5, 0, 135, 155, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatjendela(62.5, 15, 155, 255, -5, 5);
+	buatpersegipanjang(15, 0, 35, 270, -5, 5, 0.2275, 0.1804, 0.1451);
+	buatpersegipanjang(77.5, 0, 20, 35, -5, 5, 0.2275, 0.1804, 0.1451);
 
-	//atas pintu
-	buatpersegipanjang(87.5, 77.5, 20, 280, -5, 5, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(-127.5, -87.5, 20, 280, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 	buatpersegipanjang(87.5, 127.5, 20, 280, -2.5, 2.5, 0.40, 0.3137, 0.2627);
-	buatpersegipanjang(-127.5, 127.5, 280, 420, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+
+	buatpersegipanjang(-127.5, -87.5, 280, 315, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+
+	buatjendelabolongbolong(-82.5, 82.5, 280, 315, -2.5, 2.5);
+	//gagang
+	buatpersegipanjang(-87.5, -82.5, 280, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(82.5, 87.5, 280, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(82.5, -82.5, 310, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+
+
+	buatpersegipanjang(87.5, 127.5, 275, 315, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+
+	buatpersegipanjang(-127.5, 127.5, 315, 420, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
 
 
@@ -612,34 +964,63 @@ void dindingdepanrumah() {
 	buatpersegipanjang(127.5, 377.5, 20, 100, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
 	buatpersegipanjang(127.5, 207.5, 100, 275, -2.5, 2.5, 0.40, 0.3137, 0.2627);
-	buatjendela(207.5, 297.5, 100, 275, -2.5, 2.5, 0.3);
+	buatjendela(207.5, 297.5, 100, 275, -2.5, 2.5);
+	//gagang
+	buatpersegipanjang(297.5, 292.5, 100, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(292.5, 207.5, 100, 105, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(202.5, 207.5, 100, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(292.5, 207.5, 270, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(247.5, 252.5, 100, 275, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+
 	buatpersegipanjang(297.5, 377.5, 100, 275, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
-	buatpersegipanjang(127.5, 377.5, 275, 280, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
-	buatpersegipanjang(127.5, 207.5, 280, 320, -2.5, 2.5, 0.40, 0.3137, 0.2627);
-	buatjendela(207.5, 297.5, 280, 320, -2.5, 2.5, 0.3);
-	buatpersegipanjang(297.5, 377.5, 280, 320, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+	buatpersegipanjang(127.5, 207.5, 275, 315, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 
-	buatpersegipanjang(127.5, 377.5, 320, 420, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+	buatjendelabolongbolong(207.5, 292.5, 275, 315, -2.5, 2.5);
+	//gagang
+	buatpersegipanjang(297.5, 292.5, 275, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(292.5, 207.5, 275, 280, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(202.5, 207.5, 275, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+	buatpersegipanjang(292.5, 207.5, 310, 315, -2.6, 2.6, 0.5804, 0.4549, 0.3804);
+
+	buatpersegipanjang(297.5, 377.5, 275, 315, -2.5, 2.5, 0.40, 0.3137, 0.2627);
+
+	buatpersegipanjang(127.5, 377.5, 315, 420, -2.5, 2.5, 0.40, 0.3137, 0.2627);
 }
 void buatdinding() {
-	//dinding kanan
+	//dinding kiri
 	buatpersegipanjang(-372.5, -377.5, 20, 200, -2.5, 1002.5, 0.40, 0.3137, 0.2627);
 	buatpersegipanjang(-372.5, -377.5, 320, 420, -2.5, 1002.5, 0.40, 0.3137, 0.2627);
 	xawal = -2.5;
 	for (int i = 0; i < 4; i++) {
 		buatpersegipanjang(-372.5, -377.5, 200, 320, xawal, xawal + 65, 0.40, 0.3137, 0.2627);
+		buatjendela(-372.5, -377.5, 205, 315, xawal + 70, xawal + 180);
+		//gagang
+		buatpersegipanjang(-372.4, -377.6, 200, 320, xawal+65, xawal + 70, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(-372.4, -377.6, 200, 320, xawal + 180, xawal + 185, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(-372.4, -377.6, 320, 315, xawal + 65, xawal + 185, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(-372.4, -377.6, 200, 205, xawal + 65, xawal + 185, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(-372.4, -377.6, 205, 315, xawal + 120, xawal + 130, 0.5804, 0.4549, 0.3804);
+
 		buatpersegipanjang(-372.5, -377.5, 200, 320, xawal + 185, xawal + 250, 0.40, 0.3137, 0.2627);
 		xawal += 250;
 	}
 
-	//dinding kiri
+	//dinding kanan
 	buatpersegipanjang(372.5, 377.5, 20, 200, -2.5, 1002.5, 0.40, 0.3137, 0.2627);
 	buatpersegipanjang(372.5, 377.5, 320, 420, -2.5, 1002.5, 0.40, 0.3137, 0.2627);
 	xawal = -2.5;
 	for (int i = 0; i < 4; i++) {
 		buatpersegipanjang(372.5, 377.5, 200, 320, xawal, xawal + 65, 0.40, 0.3137, 0.2627);
+		buatjendela(372.5, 377.5, 205, 315, xawal + 65, xawal + 185);
+		//gagang
+		buatpersegipanjang(372.4, 377.6, 200, 320, xawal + 65, xawal + 70, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(372.4, 377.6, 200, 320, xawal + 180, xawal + 185, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(372.4, 377.6, 320, 315, xawal + 65, xawal + 185, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(372.4, 377.6, 200, 205, xawal + 65, xawal + 185, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(372.4, 377.6, 205, 315, xawal + 120, xawal + 130, 0.5804, 0.4549, 0.3804);
+
 		buatpersegipanjang(372.5, 377.5, 200, 320, xawal + 185, xawal + 250, 0.40, 0.3137, 0.2627);
 		xawal += 250;
 	}
@@ -650,6 +1031,14 @@ void buatdinding() {
 	xawal = -377.5;
 	for (int i = 0; i < 3; i++) {
 		buatpersegipanjang(xawal, xawal + 65, 200, 320, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
+		buatjendela(xawal + 70, xawal + 180, 205, 315, 997.5, 1002.5);
+		//gagang
+		buatpersegipanjang(xawal+65, xawal + 70, 200, 320, 997.5, 1002.5, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(xawal + 180, xawal + 185, 200, 320, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(xawal + 65, xawal + 185, 200, 205, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(xawal + 65, xawal + 185, 315, 320, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+		buatpersegipanjang(xawal + 120, xawal + 130, 205, 315, 997.4, 1002.6, 0.5804, 0.4549, 0.3804);
+
 		buatpersegipanjang(xawal + 185, xawal + 250, 200, 320, 997.5, 1002.5, 0.40, 0.3137, 0.2627);
 		xawal += 250;
 	}
@@ -710,7 +1099,6 @@ void buattangga() {
 	buatpersegipanjang(230, 355, -280, -240, -465, -480, 0.2275, 0.1804, 0.1451);
 	buatpersegipanjang(230, 355, -280, -265, -510, -480, 0.2275, 0.1804, 0.1451);
 
-
 	buatpersegipanjang(230, 355, -320, -280, -495, -510, 0.2275, 0.1804, 0.1451);
 	buatpersegipanjang(230, 355, -320, -305, -540, -510, 0.2275, 0.1804, 0.1451);
 
@@ -766,6 +1154,7 @@ void summontiang() {
 		buatkotak(125, i * 250, -400, 22.5, 400);
 	}
 }
+
 void display() {
 	glPushMatrix();
 	glScalef(0.2, 0.2, 0.2);
@@ -779,6 +1168,7 @@ void display() {
 
 
 	bawahan();
+	pagar();
 	summontiang();
 	buatdinding();
 	dindingdepanrumah();
@@ -896,7 +1286,8 @@ int main(int argc, char** argv)
 	glutInitWindowSize(1050, 700);
 	glutInitWindowPosition(210, 30);
 	glutCreateWindow("672016157");
-	glutDisplayFunc(display);	
+	initRendering();
+	glutDisplayFunc(display);
 	glutReshapeFunc(ukuran);
 
 	glutMouseFunc(mouse);
